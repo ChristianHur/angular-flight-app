@@ -1,0 +1,148 @@
+<div class="container">
+    <div class="row mb-5">
+        <h1 class="text-left">Add Flight Schedule</h1>
+        <div class="table-responsive border p-4 bg-light rounded">
+            <p class="text-left font-weight-bold">Active Flight Schedule</p>
+            <ng-container *ngIf="submitted">
+                <p class="text-center alert alert-success p-2 rounded">
+                    Successfully Added!
+                </p>
+            </ng-container>
+            <ng-container *ngIf="error">
+                <p class="text-center alert alert-danger p-2 rounded">
+                    Sorry, something went wrong!
+                </p>
+            </ng-container>
+            <ng-container *ngIf="!submitted">
+                <form #flightDataForm="ngForm">
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label>Id:
+                                <ng-container *ngIf="validReqs.id.required">*</ng-container>
+                            </label>
+                            <input name="id" [class]="isValid('id', 'idExists')" type="number" min={{validReqs.id.min}}
+                                max={{validReqs.id.max}} #id="ngModel" [(ngModel)]="flightData.id"
+                                (keyup)="handleChange($event)" required />
+
+                            <div class="invalid-feedback"
+                                *ngIf="validReqs.id.error || id.errors?.required || id.errors?.minlength">
+                                {{validReqs.id.error}}
+                            </div>
+                            <div class="invalid-feedback" *ngIf="validReqs.idExists">
+                                {{validReqs.idExists}}
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Flight No:
+                                <ng-container *ngIf="validReqs.flight_no.required">*</ng-container>
+                            </label>
+                            <input name="flight_no" [style.textTransform]="'uppercase'" class="{{isValid('flight_no')}}"
+                                maxLength={validReqs.flight_no.max} #flight_no="ngModel"
+                                [(ngModel)]="flightData.flight_no" (keyup)="handleChange($event)" required />
+
+                            <div class="invalid-feedback"
+                                *ngIf="validReqs.flight_no.error || flight_no.errors?.required || flight_no.errors?.minlength">
+                                {{validReqs.flight_no.error}}
+                            </div>
+
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Airline:
+                                <ng-container *ngIf="validReqs.airline.required">*</ng-container>
+                            </label>
+                            <input name="airline" style="text-transform:capitalize" [class]="isValid('airline')"
+                                maxLength={{validReqs.airline.max}} #airline="ngModel" [(ngModel)]="flightData.airline"
+                                (keyup)="handleChange($event)" required />
+
+                            <div class="invalid-feedback"
+                                *ngIf="validReqs.airline.error || airline.errors?.required || airline.errors?.minlength">
+                                {{validReqs.airline.error}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label>Trip Type:
+                                <ng-container *ngIf="validReqs.trip_type.required">*</ng-container>
+                            </label>
+                            <select name="trip_type" (change)="handleChange($event)" class="form-control" #trip_type="ngModel"
+                                [(ngModel)]="flightData.trip_type">
+                                <option>One Way</option>
+                                <option>Round Trip</option>
+                                <option value="Multi">Multiple Destinations</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Departure Airport:
+                                <ng-container *ngIf="validReqs.departure_airport.required">*</ng-container>
+                            </label>
+
+                            <input name="departure_airport" [style.textTransform]="'uppercase'"
+                                [class]="isValid('departure_airport')" maxLength={{validReqs.departure_airport.max}}
+                                #departure_airport="ngModel" [(ngModel)]="flightData.departure_airport"
+                                (keyup)="handleChange($event)" required />
+
+                            <div class="invalid-feedback"
+                                *ngIf="validReqs.departure_airport.error || departure_airport.errors?.required || departure_airport.errors?.minlength">
+                                {{validReqs.departure_airport.error}}
+                            </div>
+
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Arrival Airport:
+                                <ng-container *ngIf="validReqs.arrival_airport.required">*</ng-container>
+                            </label>
+                            <input name="arrival_airport" [style.textTransform]="'uppercase'"
+                                [class]="isValid('arrival_airport','sameAirportError')"
+                                maxLength={validReqs.arrival_airport.max} #arrival_airport="ngModel"
+                                [(ngModel)]="flightData.arrival_airport" (keyup)="handleChange($event)" required />
+                         
+                                <div class="invalid-feedback" *ngIf="validReqs.arrival_airport.error || arrival_airport.errors?.required || arrival_airport.errors?.minlength">
+                                    {{validReqs.arrival_airport.error}}
+                                </div>
+                                <div class="invalid-feedback" *ngIf="validReqs.sameAirportError">
+                                    {{validReqs.sameAirportError}}
+                                </div>
+
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label>Departure Date:
+                                <ng-container *ngIf="validReqs.departure_date.required">*</ng-container>
+                            </label>
+                            <input type="date" name="departure_date" [class]="isValid('departure_date')"
+                                #departure_date="ngModel" [(ngModel)]="flightData.departure_date"
+                                (keyup)="handleChange($event)" (change)="handleChange($event)" required />
+
+                                <div class="invalid-feedback" *ngIf="validReqs.departure_date.error || departure_date.errors?.required || departure_date.errors?.minlength">
+                                    {{validReqs.departure_date.error}}
+                                </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Return Date:
+                                <ng-container *ngIf="validReqs.return_date.required">*</ng-container>
+                            </label>
+                            <input type="date" name="return_date" [class]="isValid('return_date','datesError')"
+                                #return_date="ngModel" [(ngModel)]="flightData.return_date"
+                                (keyup)="handleChange($event)" (change)="handleChange($event)" required />
+
+                                <div class="invalid-feedback" *ngIf="validReqs.return_date.error || return_date.errors?.required || return_date.errors?.minlength">
+                                    {{validReqs.return_date.error}}
+                                </div>
+                                <div class="invalid-feedback" *ngIf="validReqs.datesError">
+                                    {{validReqs.datesError}}
+                                </div>
+                        </div>
+                    </div>
+
+                    <button (click)="handleSubmit($event)" class="btn btn-primary btn-just-icon btn-lg">
+                        Submit
+                    </button>
+                </form>
+            </ng-container>
+        </div>
+    </div>
+</div>

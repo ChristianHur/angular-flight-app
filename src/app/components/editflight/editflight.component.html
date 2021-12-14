@@ -1,0 +1,132 @@
+<div class="container">
+    <div class="row mb-5">
+        <h1 class="text-left">Edit Flight Schedule</h1>
+        <div class="table-responsive border p-4 bg-light rounded">
+            <p class="text-left font-weight-bold">Active Flight Schedule</p>
+            <ng-container *ngIf="submitted">
+                <p class="text-center alert alert-success p-2 rounded">
+                    Successfully Added!
+                </p>
+            </ng-container>
+            <ng-container *ngIf="error">
+                <p class="text-center alert alert-danger p-2 rounded">
+                    Sorry, something went wrong!
+                </p>
+            </ng-container>
+            <ng-container *ngIf="!submitted">
+                <form [formGroup]="form" (ngSubmit)="handleSubmit($event)">
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label>Id:
+                                <ng-container *ngIf="validReqs.id.required">*</ng-container>
+                            </label>
+                            <input name="id" [class]="isValid('id', 'idExists')" (keyup)="handleChange($event)" type="number" formControlName="id" />
+
+                                <div class="invalid-feedback" *ngIf="form.controls.id.errors?.required || validReqs.id.error">
+                                    {{errMessages.idError}}
+                                </div>
+                                <div class="invalid-feedback" *ngIf="validReqs.idExists">
+                                    {{errMessages.idExists}}
+                                </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Flight No:
+                                <ng-container *ngIf="validReqs.flight_no.required">*</ng-container>
+                            </label>
+                            <input name="flight_no" [style.textTransform]="'uppercase'" (keyup)="handleChange($event)" [class]="isValid('flight_no')" formControlName="flight_no" maxlength=20/>
+
+                                <div class="invalid-feedback" *ngIf="form.controls.flight_no.errors?.required || form.controls.flight_no.errors?.minlength || validReqs.flight_no.error">
+                                    {{errMessages.flight_noError}}
+                                </div>
+
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Airline:
+                                <ng-container *ngIf="validReqs.airline.required">*</ng-container>
+                            </label>
+                        <input name="airline" style="text-transform:capitalize" (keyup)="handleChange($event)" [class]="isValid('airline')" formControlName="airline" maxlength=25/>
+
+                                <div class="invalid-feedback" *ngIf="form.controls.airline.errors?.required || form.controls.airline.errors?.minlength">
+                                    {{errMessages.airlineError}}
+                                </div>
+                                
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label>Trip Type:
+                                <ng-container *ngIf="validReqs.trip_type.required">*</ng-container>
+                            </label>
+                            <select name="trip_type" (change)="handleChange($event)" class="form-control"
+                            formControlName="trip_type">
+                                <option>One Way</option>
+                                <option>Round Trip</option>
+                                <option value="Multi">Multiple Destinations</option>
+                            </select>                           
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Departure Airport:
+                                <ng-container *ngIf="validReqs.departure_airport.required">*</ng-container>
+                            </label>
+
+                            <input name="departure_airport" (keyup)="handleChange($event)" [style.textTransform]="'uppercase'" [class]="isValid('departure_airport')"
+                            formControlName="departure_airport" maxlength=5/>
+
+                                <div class="invalid-feedback" *ngIf="form.controls.departure_airport.errors?.required || form.controls.departure_airport.errors?.minlength || validReqs.departure_airport.error">
+                                    {{errMessages.departure_airportError}}
+                                </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Arrival Airport:
+                                <ng-container *ngIf="validReqs.arrival_airport.required">*</ng-container>
+                            </label>
+                            <input name="arrival_airport"  (keyup)="handleChange($event)"  [style.textTransform]="'uppercase'" [class]="isValid('arrival_airport','sameAirportError')" formControlName="arrival_airport" maxlength=5/>
+
+                                <div class="invalid-feedback" *ngIf="form.controls.arrival_airport.errors?.required || form.controls.arrival_airport.errors?.minlength || validReqs.arrival_airport.error">
+                                    {{errMessages.arrival_airportError}}
+                                </div>
+                                
+                                <div class="invalid-feedback" *ngIf="validReqs.sameAirportError">
+                                    {{errMessages.sameAirportError}}
+                                </div>
+
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <label>Departure Date:
+                                <ng-container *ngIf="validReqs.departure_date.required">*</ng-container>
+                            </label>
+                            <input type="date" (keyup)="handleChange($event)" (change)="handleChange($event)" name="departure_date" [class]="isValid('departure_date')"
+                            formControlName="departure_date"/>
+
+                                <div class="invalid-feedback" *ngIf="form.controls.departure_date.errors?.required || form.controls.departure_date.errors?.minlength || validReqs.departure_date.error">
+                                    {{errMessages.departure_dateError}}
+                                </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Return Date:
+                                <ng-container *ngIf="validReqs.return_date.required">*</ng-container>
+                            </label>
+                            <input type="date" (keyup)="handleChange($event)" (change)="handleChange($event)" name="return_date" [class]="isValid('return_date','datesError')"
+                            formControlName="return_date"/>
+
+                                <div class="invalid-feedback" *ngIf="form.controls.return_date.errors?.required || form.controls.return_date.errors?.minlength|| validReqs.return_date.error">
+                                    {{errMessages.return_dateError}}
+                                </div>
+                                <div class="invalid-feedback" *ngIf="validReqs.datesError">
+                                    {{errMessages.datesError}}
+                                </div>
+                        </div>
+                    </div>
+
+                    <button (click)="handleSubmit($event)" class="btn btn-primary btn-just-icon btn-lg">
+                        Submit
+                    </button>
+                </form>
+            </ng-container>
+        </div>
+    </div>
+</div>
